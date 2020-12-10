@@ -2,6 +2,18 @@ import { Preset } from 'use-preset';
 
 Preset.setName('mgkprod/new');
 
+Preset.prompt().add('config', {
+    type: 'toggle',
+    name: 'config',
+    message: 'Configure Laravel app',
+});
+
+Preset.prompt().add('version', {
+    type: 'toggle',
+    name: 'version',
+    message: 'Add basic semver file',
+});
+
 //* FIXME: Not working
 // Preset.prompt().add('presets', {
 //     type: 'multiselect',
@@ -18,16 +30,10 @@ Preset.setName('mgkprod/new');
 
 //* FIXME: Not working
 // Preset.apply('./config')
+//     .if((prompts) => prompts.config)
 // or
 // Preset.apply('.', ['--path config'])
-
-// Preset.prompts.presets.includes('config')
-//     ? Preset.apply('.').with(['--path config'])
-//     : '';
-
-// Preset.prompts.presets.includes('version')
-//     ? Preset.apply('.').with(['--path version'])
-//     : '';
+//     .if((prompts) => prompts.config)
 
 // TODO:
     // Config .env and package.json

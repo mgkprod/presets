@@ -2,9 +2,17 @@ import { Preset } from 'use-preset';
 
 Preset.setName('mgkprod/config');
 
-//* FIXME: Not working
-// Preset.input('french_localization', 'Configure French language?', true)
-// Preset.input('run_php_cs', 'Run php-cs-fixer at the end of the process?', true)
+Preset.prompt().add('french_localization', {
+    type: 'toggle',
+    name: 'french_localization',
+    message: 'Configure French language?',
+});
+
+Preset.prompt().add('run_php_cs', {
+    type: 'toggle',
+    name: 'run_php_cs',
+    message: 'Run php-cs-fixer at the end of the process?',
+});
 
 // "Style code" rules
 Preset.extract('config');
@@ -46,20 +54,22 @@ Preset.edit('app/Providers/AppServiceProvider.php')
     .skipLines(1)
     .withIndent('double')
 
-// Configure french localization
-Preset.edit('config/app.php')
-    .update((content) => {
-        return content
-            .replace('UTC', 'Europe/Paris')
-            .replace("'locale' => 'en'", "'locale' => 'fr'")
-            .replace('en_US', 'fr_FR')
-    })
+Preset.group((preset) => {
+    // Configure french localization
+    Preset.edit('config/app.php')
+        .update((content) => {
+            return content
+                .replace('UTC', 'Europe/Paris')
+                .replace("'locale' => 'en'", "'locale' => 'fr'")
+                .replace('en_US', 'fr_FR')
+        })
 
-Preset.execute('mkdir', 'resources\\lang\\fr');
+    Preset.execute('mkdir', 'resources\\lang\\fr');
 
-['auth.php', 'pagination.php', 'passwords.php', 'validation-inline.php', 'validation.php'].forEach(
-    (file) => Preset.execute('curl', 'https://raw.githubusercontent.com/Laravel-Lang/lang/master/src/fr/' + file, '-o', 'resources\\lang\\fr\\' + file)
-);
+    ['auth.php', 'pagination.php', 'passwords.php', 'validation-inline.php', 'validation.php'].forEach(
+        (file) => Preset.execute('curl', 'https://raw.githubusercontent.com/Laravel-Lang/lang/master/src/fr/' + file, '-o', 'resources\\lang\\fr\\' + file)
+    )
+}).if((prompts) => prompts.french_localization)
 
 // Helpers
 Preset.execute('composer')
@@ -109,8 +119,5 @@ Preset.edit('webpack.mix.js')
     })
 
 // Run php-cs
-
-//* FIXME: Not working
-// Preset.prompts.run_php_cs ? Preset.execute('php-cs-fixer', 'fix', '.') : '';
-
-Preset.execute('php-cs-fixer', 'fix', '.');
+Preset.execute('php-cs-fixer', 'fix', '.')
+    .if((prompts) => prompts.run_php_cs)
