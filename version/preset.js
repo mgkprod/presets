@@ -13,7 +13,7 @@ Preset.edit('app/Providers/AppServiceProvider.php')
     ])
 
 //* FIXME: Not working
-// .addAfter('public function register\(\)(\s*){', [
+// .addAfter(/public function register\(\)(\s*){/gm, [
 
 Preset.edit('app/Providers/AppServiceProvider.php')
     .addAfter('public function register', [
