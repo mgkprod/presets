@@ -4,16 +4,12 @@ Preset.setName('mgkprod/new');
 
 Preset.confirm('config', 'Configure Laravel app?', true);
 Preset.confirm('version', 'Add basic semver file?', true);
-Preset.confirm('vitl', 'VITL stack?', true);
 
 Preset.apply(({ presetDirectory }) => `${presetDirectory}/../config`)
-    .if(({ prompts }) => prompts.config === true)
+    .ifPrompt('config')
 
 Preset.apply(({ presetDirectory }) => `${presetDirectory}/../version`)
-    .if(({ prompts }) => prompts.version === true)
-
-Preset.apply(({ presetDirectory }) => `${presetDirectory}/../vitl`)
-    .if(({ prompts }) => prompts.vitl === true)
+    .ifPrompt('version')
 
 // TODO:
     // Config .env and package.json
