@@ -21,14 +21,3 @@ Preset.edit('app/Providers/AppServiceProvider.php')
     ])
     .skipLines(1)
     .withIndent('double')
-
-// Preset.edit('app/Providers/AppServiceProvider.php')
-//     .addAfter(/public function register\(\)(\s*){/m, [
-//         "$version = rescue(fn () => 'v' . trim(File::get(config_path('.version'))), 'WIP', false);",
-//         "$sha = rescue(fn () => ' (' . substr(File::get(base_path('REVISION')), 0, 7) . ')', null, false);",
-//         "$env = config('app.env') == 'production' ? '' : ' - ' . config('app.env');",
-//         '',
-//         "View::share('version', $version . $sha . $env);",
-//         '',
-//     ])
-//     .withIndent('double')

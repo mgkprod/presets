@@ -35,11 +35,10 @@ Preset.group((Preset) => {
     Preset.installDependencies('node')
 }).withTitle('Installing node dependencies...')
 
-//* FIXME: Not working
 // Laravel Mix configuration
 Preset.edit('webpack.mix.js')
     .update((content) => {
-        content.replace(/mix.js((.|\s)+)]\);/gm, [
+        return content.replace(/mix.js((.|\s)+)]\);/gm, [
                 "mix",
                 "    .js('resources/js/app.js', 'public/js')",
                 "    .sass('resources/sass/app.scss', 'public/css')",
@@ -61,7 +60,7 @@ Preset.edit('app/Providers/AppServiceProvider.php')
 // If you used mgkprod/version
 Preset.edit('app/Providers/AppServiceProvider.php')
     .update((content) => {
-        content.replace(
+        return content.replace(
             "View::share('version', $version . $sha . $env);",
             "Inertia::share('version', $version . $sha . $env);"
         )
