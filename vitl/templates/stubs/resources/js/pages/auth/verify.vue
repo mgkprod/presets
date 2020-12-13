@@ -1,52 +1,28 @@
 <template>
-    <form class="max-w-lg bg-white rounded-lg shadow mx-auto p-8" @submit.prevent="submit">
-        <h1 class="text-2xl font-bold mb-6">Verify Your Email Address</h1>
+    <form class="flex flex-col overflow-hidden bg-white rounded shadow-sm" @submit.prevent="submit">
+        <div class="flex-grow w-full p-8">
+            <h1 class="mb-8 text-2xl font-semibold text-center">Verify your email address</h1>
 
-        <h3 class="text-gray-600 text-sm mb-10">
-            Before proceeding, please check your email for a verification link. If you did not receive the email click the button below to request another.
-        </h3>
+            <p class="mb-10 text-sm text-gray-600">
+                Before proceeding, please check your email for a verification link. If you did not receive the email click the button below to request another.
+            </p>
 
-        <button class="w-full bg-gray-800 hover:bg-gray-900 text-white text-sm font-semibold rounded focus:outline-none focus:shadow-outline py-3">
-            Resend Verification Email
-        </button>
+            <button class="w-full py-3 text-sm font-semibold text-white transition duration-200 ease-in-out rounded bg-primary-500 active:bg-transparent focus:ring-2 focus:ring-opacity-50 focus:ring-primary-500 hover:bg-primary-600 focus:outline-none focus:shadow-outline">Resend verification email</button>
+        </div>
     </form>
 </template>
 
 <script>
     export default {
-        /**
-         * Layout of the page.
-         *
-         * @type {Object}
-         */
-        layout: require('../../layouts/app').default,
+        layout: require('../../layouts/gate').default,
 
-        /**
-         * Component reactive data.
-         *
-         * @return {Object}
-         */
         data() {
             return {
-                form: {
-                    email: '',
-                    password: '',
-                    remember: false,
-                }
+                form: {}
             }
         },
 
-        /**
-         * Component methods.
-         *
-         * @type {Object}
-         */
         methods: {
-            /**
-             * Submit the form.
-             *
-             * @return {void}
-             */
             submit() {
                 this.$page.props.errors = {}
 

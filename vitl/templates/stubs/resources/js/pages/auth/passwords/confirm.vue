@@ -1,54 +1,39 @@
 <template>
-    <form class="max-w-lg bg-white rounded-lg shadow mx-auto p-8" @submit.prevent="submit">
-        <h1 class="text-2xl font-bold">Confirm Password</h1>
+    <form class="flex flex-col overflow-hidden bg-white rounded shadow-sm" @submit.prevent="submit">
+        <div class="flex-grow w-full p-8">
+            <h1 class="mb-8 text-2xl font-semibold text-center">Confirm password</h1>
 
-        <h3 class="text-gray-600 text-sm mb-6">Please confirm your password before continuing.</h3>
+            <p class="mb-10 text-sm text-gray-600">
+                Please confirm your password before continuing.
+            </p>
 
-        <form-input class="mb-2"
-                label="Password"
-                placeholder="Your Password"
-                type="password"
-                v-model="form.password"
-                :errors="$page.props.errors.password"
-                required
-                autocomplete="current-password" />
+            <form-input class="mb-2"
+                    label="Password"
+                    placeholder="Your Password"
+                    type="password"
+                    v-model="form.password"
+                    :errors="$page.props.errors.password"
+                    required
+                    autocomplete="current-password" />
 
-        <div class="text-right mb-8">
-            <inertia-link class="text-sm text-gray-600 hover:text-gray-800" :href="route('password.request')">Forgot Password?</inertia-link>
+            <div class="mb-8 text-right">
+                <inertia-link class="text-sm text-gray-600 hover:text-gray-800" :href="route('password.request')">Forgot password?</inertia-link>
+            </div>
+
+            <button class="w-full py-3 text-sm font-semibold text-white transition duration-200 ease-in-out rounded bg-primary-500 active:bg-transparent focus:ring-2 focus:ring-opacity-50 focus:ring-primary-500 hover:bg-primary-600 focus:outline-none focus:shadow-outline">Confirm password</button>
         </div>
-
-        <button class="w-full bg-gray-800 hover:bg-gray-900 text-white text-sm font-semibold rounded focus:outline-none focus:shadow-outline py-3">
-            Confirm Password
-        </button>
     </form>
 </template>
 
 <script>
-    import axios from "axios"
-
     export default {
-        /**
-         * Layout of the page.
-         *
-         * @type {Object}
-         */
-        layout: require('../../../layouts/app').default,
+        layout: require('../../../layouts/gate').default,
 
-        /**
-         * Component properties.
-         *
-         * @type {Object}
-         */
         props: {
             email: String,
             token: String,
         },
 
-        /**
-         * Component reactive data.
-         *
-         * @return {Object}
-         */
         data() {
             return {
                 form: {
@@ -57,17 +42,7 @@
             }
         },
 
-        /**
-         * Component methods.
-         *
-         * @type {Object}
-         */
         methods: {
-            /**
-             * Submit the form.
-             *
-             * @return {void}
-             */
             submit() {
                 this.$page.props.errors = {}
 

@@ -19,6 +19,8 @@ Route::inertia('/', 'welcome')->name('index');
 
 Route::group(['middleware' => 'auth'], function(){
     Route::get('home', [HomeController::class, 'home'])->name('home');
+
+    //
 });
 
 Auth::routes();

@@ -1,24 +1,21 @@
 <template>
-    <div class="max-w-md p-8 mx-auto bg-white rounded-lg shadow lg:max-w-3xl">
-        <h1 class="text-2xl font-bold text-gray-600">Welcome, {{ user.name }}!</h1>
-        <h1 class="text-xl font-bold text-gray-700">Build something incredible.</h1>
+    <div>
+        <div class="flex flex-col overflow-hidden bg-white rounded shadow-sm">
+            <div class="w-full px-5 py-4 font-semibold lg:px-6 bg-gray-50">
+                <h3>Welcome, {{ user.name }}!</h3>
+            </div>
+
+            <div class="flex-grow w-full p-5 lg:p-6">
+                <p>Build something incredible.</p>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
     export default {
-        /**
-         * Layout of the page.
-         *
-         * @type {Object}
-         */
         layout: require('../layouts/app').default,
 
-        /**
-         * Component properties.
-         *
-         * @type {Object}
-         */
         props: {
             user: Object,
         }
