@@ -65,10 +65,11 @@ Preset.execute('composer')
 // Laravel Mix configuration
 Preset.edit('webpack.mix.js')
     .update((content) => {
-        return content + "\n\n" + [
+        return content + "\n" + [
             'mix',
             '    .version()',
             '    .disableSuccessNotifications();',
+            '',
         ].join("\n")
     })
 
@@ -81,7 +82,9 @@ Preset.group((Preset) => {
 
     Preset.edit('webpack.mix.js')
         .update((content) => {
-            return content + "\n\n" + "mix.copyDirectory('resources/public/', 'public/');"
+            return content + "\n"
+                + "mix.copyDirectory('resources/public/', 'public/');"
+                + "\n"
         })
 }).if(({prompts}) => prompts.move_reused_resources)
 
