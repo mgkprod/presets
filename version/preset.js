@@ -2,32 +2,33 @@ import { Preset } from 'use-preset';
 
 Preset.setName('mgkprod/version');
 
-//* FIXME: Not working
-// .addAfter('use Illuminate\\Support\\ServiceProvider;',
+Preset.extract('config')
 
-// AppServiceProvider
 Preset.edit('app/Providers/AppServiceProvider.php')
-    .addAfter('use', [
+    .addAfter(/use Illuminate\\Support\\ServiceProvider;/, [
         'use Illuminate\\Support\\Facades\\File;',
         'use Illuminate\\Support\\Facades\\View;',
     ])
 
-//* FIXME: Not working
-// .addAfter(/public function register\(\)(\s*){/gm, [
-
 Preset.edit('app/Providers/AppServiceProvider.php')
     .addAfter('public function register', [
-        "$version = rescue(fn () => File::get(config_path('.version')), 'WIP', false);",
-        "$env = config('app.env');",
+        "$version = rescue(fn () => 'v' . trim(File::get(config_path('.version'))), 'WIP', false);",
+        "$sha = rescue(fn () => ' (' . substr(File::get(base_path('REVISION')), 0, 7) . ')', null, false);",
+        "$env = config('app.env') == 'production' ? '' : ' - ' . config('app.env');",
         '',
-        "View::share('version', \"v$version.$env\");",
+        "View::share('version', $version . $sha . $env);",
         '',
     ])
     .skipLines(1)
     .withIndent('double')
 
-Preset.execute('touch', 'config/.version')
-
-//* IDEA: Create file if not exists
-Preset.edit('config/.version')
-    .update((content) => '1.0.0')
+// Preset.edit('app/Providers/AppServiceProvider.php')
+//     .addAfter(/public function register\(\)(\s*){/m, [
+//         "$version = rescue(fn () => 'v' . trim(File::get(config_path('.version'))), 'WIP', false);",
+//         "$sha = rescue(fn () => ' (' . substr(File::get(base_path('REVISION')), 0, 7) . ')', null, false);",
+//         "$env = config('app.env') == 'production' ? '' : ' - ' . config('app.env');",
+//         '',
+//         "View::share('version', $version . $sha . $env);",
+//         '',
+//     ])
+//     .withIndent('double')

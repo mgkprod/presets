@@ -2,44 +2,24 @@ import { Preset } from 'use-preset';
 
 Preset.setName('mgkprod/config');
 
-Preset.prompt().add('french_localization', {
-    type: 'toggle',
-    name: 'french_localization',
-    message: 'Configure French language?',
-});
-
-Preset.prompt().add('run_php_cs', {
-    type: 'toggle',
-    name: 'run_php_cs',
-    message: 'Run php-cs-fixer at the end of the process?',
-});
+Preset.confirm('french_localization', 'Configure French language?', true);
+Preset.confirm('french_localization_latest', 'With the latest files?', true).if(({prompts}) => prompts.french_localization);
+Preset.confirm('move_reused_resources', 'Move reused resources?', true);
+Preset.confirm('run_php_cs', 'Run php-cs-fixer at the end of the process?', true);
 
 // "Style code" rules
-Preset.extract('config');
-
-//* FIXME: Workaround for .vscode (dot directory)
-Preset.execute('mkdir', '.vscode');
-Preset.execute('touch', '.vscode/settings.json')
-
-Preset.edit('.vscode/settings.json')
-    .update((content) => JSON.stringify({ "php-cs-fixer.onsave": true, }));
+Preset.extract('config').withDots(true);
 
 // Editor configuration
 Preset.edit('.gitignore')
     .addAfter('node_modules', ['/.vscode'])
 
-//* FIXME: Not working
-// .addAfter('use Illuminate\\Support\\ServiceProvider;',
-
 // AppServiceProvider
 Preset.edit('app/Providers/AppServiceProvider.php')
-    .addAfter('use', [
+    .addAfter(/use Illuminate\\Support\\ServiceProvider;/, [
         'use Illuminate\\Support\\Carbon;',
         'use Illuminate\\Support\\Facades\\URL;',
     ])
-
-//* FIXME: Not working
-// .addAfter(/public function register\(\)(\s*){/gm, [
 
 Preset.edit('app/Providers/AppServiceProvider.php')
     .addAfter('public function register', [
@@ -54,7 +34,7 @@ Preset.edit('app/Providers/AppServiceProvider.php')
     .skipLines(1)
     .withIndent('double')
 
-Preset.group((preset) => {
+Preset.group((Preset) => {
     // Configure french localization
     Preset.edit('config/app.php')
         .update((content) => {
@@ -64,12 +44,14 @@ Preset.group((preset) => {
                 .replace('en_US', 'fr_FR')
         })
 
-    Preset.execute('mkdir', 'resources\\lang\\fr');
+    Preset.extract('lang');
 
-    ['auth.php', 'pagination.php', 'passwords.php', 'validation-inline.php', 'validation.php'].forEach(
-        (file) => Preset.execute('curl', 'https://raw.githubusercontent.com/Laravel-Lang/lang/master/src/fr/' + file, '-o', 'resources\\lang\\fr\\' + file)
-    )
-}).if((prompts) => prompts.french_localization)
+    Preset.group((Preset) => {
+        ['auth.php', 'pagination.php', 'passwords.php', 'validation-inline.php', 'validation.php'].forEach(
+            (file) => Preset.execute('curl', 'https://raw.githubusercontent.com/Laravel-Lang/lang/master/src/fr/' + file, '-o', 'resources/lang/fr/' + file)
+        )
+    }).if(({prompts}) => prompts.french_localization_latest)
+}).if(({prompts}) => prompts.french_localization)
 
 // Helpers
 Preset.execute('composer')
@@ -90,34 +72,19 @@ Preset.edit('webpack.mix.js')
         ].join("\n")
     })
 
-// Move public assets into resources/
-Preset.execute('mv', 'public\\', 'resources\\public')
+Preset.group((Preset) => {
+    // Move ./public into ./resources/public
+    Preset.execute('mv', 'public', 'resources\\')
+    Preset.extract('public')
+    Preset.execute('mv', 'resources\\public\\index.php', 'public\\index.php')
+    Preset.execute('mv', 'resources\\public\\.htaccess', 'public\\.htaccess')
 
-//* FIXME: Not working
-// Preset.extract('public')
-
-Preset.execute('mkdir', 'public');
-Preset.execute('touch', 'public/.gitignore')
-
-Preset.edit('public/.gitignore')
-    .update((content) => [
-        '*',
-        '!.gitignore',
-        '!index.php',
-        '!.htaccess',
-    ].join('\n'));
-
-// But keep these files:
-let files = ['index.php', '.htaccess']
-.forEach(
-    (file) => Preset.execute('mv', 'resources\\public\\' + file, 'public\\' + file)
-);
-
-Preset.edit('webpack.mix.js')
-    .update((content) => {
-        return content + "\n\n" + "mix.copyDirectory('resources/public/', 'public/');"
-    })
+    Preset.edit('webpack.mix.js')
+        .update((content) => {
+            return content + "\n\n" + "mix.copyDirectory('resources/public/', 'public/');"
+        })
+}).if(({prompts}) => prompts.move_reused_resources)
 
 // Run php-cs
 Preset.execute('php-cs-fixer', 'fix', '.')
-    .if((prompts) => prompts.run_php_cs)
+    .if(({prompts}) => prompts.run_php_cs)
