@@ -14,6 +14,15 @@ Preset.extract('config').withDots(true);
 Preset.edit('.gitignore')
     .addAfter('node_modules', ['/.vscode'])
 
+Preset.edit('.env')
+    .update((content) => {
+        return content + "\n" + [
+            'IGNITION_EDITOR=vscode',
+            'IGNITION_THEME=auto',
+            '',
+        ].join("\n")
+    })
+
 // AppServiceProvider
 Preset.edit('app/Providers/AppServiceProvider.php')
     .addAfter(/use Illuminate\\Support\\ServiceProvider;/, [
