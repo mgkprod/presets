@@ -1,11 +1,11 @@
 {
   "name": "presets",
   "version": "1.0.0",
-  "main": "index.js",
+  "preset": "new/preset.ts",
   "repository": "https://github.com/mgkprod/presets",
   "author": "Simon Rubuano <sr@mgk.dev>",
   "license": "MIT",
   "devDependencies": {
-    "use-preset": "^0.2.6"
+    "apply": "^0.2.12"
   }
 }
